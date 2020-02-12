@@ -13,85 +13,70 @@ const equal = document.querySelector('.equal');
 
 const clear = document.querySelector('.CE');
 
-const add = (a, b) => a + b;
+const operators = ['-+*÷'];
 
-const subtract = (a, b) => a - b;
-
-const multiply = (a, b) => a * b;
-
-const divide = (a, b) => a / b;
+const operIndex = displayValue.lastIndexOf(operators)
 
 allNumbers.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         displayValue += button.value;
         console.log(displayValue);
-        message.textContent += button.value; 
-        if (button.value.includes(screen.textContent.slice(-1))) {
-            screen.textContent += button.value;
-        } else {
-            screen.textContent = '';
-            screen.textContent += button.value;
-        }
+        message.textContent += button.value;
+        screen.textContent += button.value;
     })
 });
 
 operatorsBtn.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         console.log(displayValue);
-        if ('-+*÷'.includes(displayValue.slice(-1))) {
+        memStack.push(screen.textContent);
+        screen.textContent = '';
+        if (operators.includes(displayValue.slice(-1))) {
             return
         } else {
+            memStack.push(button.value);
             displayValue += button.value;
             message.textContent += button.value;
         }
     })
 });
 
-clear.addEventListener('click', function() {
-    displayValue = '';  
+clear.addEventListener('click', function () {
+    displayValue = '';
     message.textContent = '';
     screen.textContent = '';
+    memStack = [];
 });
 // this works in Console
-const operate = (operator, a, b) => {
+const calculate = (operator, a, b) => {
     switch (operator) {
         case '÷':
             if (b == 0) {
-                displayValue = 'sorry, not possible.';
-            } else return divide(a, b);
+                screen.textContent = 'sorry, not possible.';
+            } else return a / b;
+            break;
         case '*':
-            return multiply(a, b);
+            return a * b;
         case '+':
-            return add(a, b);
+            return a + b;
         case '-':
-            return subtract(a, b);
+            return a - b;
     }
 }
 
-
-// troubles with getting desired result
-function operations(value) {
-    temp = value.split("") 
-    result = "";    
-    for (let i = 0; i < value.length; i++) {
-        operator = temp[i];
-        a = temp[i - 1];
-        b = temp[i + 1];
-        if (operator == '÷' || operator == '*') {
-            temp.splice(i-1, 3, (operate(operator, a, b)));
-        }
-    }
-    for (let i = 0; i < value.length; i++) {
-        if (operator == '+' || operator == '-') {
-            temp.splice(i - 1, 3, (operate(operator, a, b)));
-        }
-    }
-    return (temp[0].toString());
+function operate(array) {
+    result = [];
+    array.every(ele => {
+        if (parseInt(ele) != NaN) {
+            result.push(parseInt(ele));
+        } else return result.push(ele);
+    });
+    return calculate(array[1], array[0], array[2]);
 }
 
-
-equal.addEventListener('click', function() {
-    screen.textContent = operations(displayValue);
+equal.addEventListener('click', function () {
+    memStack.push(screen.textContent);
+    screen.textContent = operate(memStack);
 });
 
 /* window.addEventListener('keydown', function(e) {
