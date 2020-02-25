@@ -11,13 +11,16 @@
     display: grid;
     text-align: center;
     margin: 5px;
+    padding: 5px 10px;
     grid-gap: 5px;
     width: 300px;
-    height: 400px;
+    height: 460px;
     grid-template-columns: repeat(5, 50px);
     grid-template-rows: repeat(4, 50px);
     grid-auto-rows: 50px;
-    
+    background-color: #73b1dd;
+    box-shadow: 0 0 20px #3a3838;
+    border-radius: 15px;
 }
 
 .screen {
@@ -26,11 +29,46 @@
     border: 1px solid grey;
     margin: 5px 5px;
     text-align: right;
+    background-color: #524c4c;
+    color: #eeeeee;
+    font-family: Sans-serif, "Times New Roman", serif;
+    font-size: 2em;
 }
-.operators {
+
+.number, .operators, .CE, .equal, .BCK {
+    border-radius: 15px;
+}
+
+.number {
+    background-color: #afc7d8;
+    color: #474545;
+    box-shadow: 0 0 3px black;
+    padding: 0;
+    border: none;
+}
+.operators, .CE, .equal {
     grid-column: span 2;
+    background-color: #ff7e0d;
+    color: white;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 3px black;
+}
+
+.BCK {
+    grid-column: span 1;
+    background-color: #ff7e0d;
+    color: white;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 3px black;
 }
 
 .message {
     text-align: right;
+}
+
+.equal {
+    grid-column: span 2;
+    background-color: red;
 }

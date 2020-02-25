@@ -15,9 +15,13 @@ const clearEverything = document.querySelector('.CE');
 
 clearEverything.addEventListener('click', clear);
 
+const BCK = document.querySelector('.BCK');
+
+BCK.addEventListener('click', deleteLast);
+
 const operIndex = displayValue.lastIndexOf();
 
-const operators = '/*-+.';
+const operators = ['*', '-', '+', '/'];
 
 allNumbers.forEach(button => {
     button.addEventListener('click', function () {
@@ -50,13 +54,18 @@ function clear() {
     memStack = [];
 }
 
+function deleteLast() {
+    screen.textContent = screen.textContent.slice(0, screen.textContent.length -1);
+    message.textContent = message.textContent.slice(0, message.textContent.length -1);
+    memStack = memStack.splice(0, memStack.length -1);
+}
+
 function updateDisplay(e) {
     key = e.key
-    numbers = /[0-9]/;
-    if (numbers.test(key)) {
+    if (!isNaN(parseInt(key))) {
         displayValue += key;
         console.log(displayValue);
-        message.textContent +=key;
+        message.textContent += key;
         screen.textContent += key;
     } else { 
         switch (key) {
@@ -68,9 +77,13 @@ function updateDisplay(e) {
                 if (operators.includes(displayValue.slice(-1))) {
                     return
                 } else {
-                memStack.push(screen.textContent);
-                screen.textContent = operate(memStack);
+                    memStack.push(screen.textContent);
+                    screen.textContent = operate(memStack);
                 }
+                break;
+            case 'Delete':
+            case 'Backspace':
+                deleteLast();
                 break;
             case '.':
             case '+':
@@ -123,26 +136,20 @@ function operate(array) {
             console.log("operators", operatorCount.length);
         }
     }
-        if (1 < operatorCount.length) {
-        for (let index = 0; index < parsedEquation.length; index++) {
-            if (parsedEquation[index] == "*" || parsedEquation[index] == "/") {
-                // removes numbers next to operator in chunks of 3 indexes
-                parsedEquation.splice(index - 1, 3, calculate(parsedEquation[index], parsedEquation[index - 1], parsedEquation[index + 1]));
-                operatorCount.shift();
-            } else if (parsedEquation[index] == "+" || parsedEquation[index] == "-") {
-                parsedEquation.splice(index - 1, 3, calculate(parsedEquation[index], parsedEquation[index - 1], parsedEquation[index + 1]));
-                operatorCount.shift();
-            }
+    operators.forEach((operator) => {
+        while (parsedEquation.includes(operator)) {
+            let result = 0;
+            opIndex = parsedEquation.indexOf(operator);
+            result = calculate(parsedEquation[opIndex], parsedEquation[opIndex - 1], parsedEquation[opIndex + 1]);
+            parsedEquation.splice(opIndex - 1, 3, result);
         }
-        console.log(parsedEquation);
-        return calculate(parsedEquation[1], parsedEquation[0], parsedEquation[2]);
-        }
-    console.log(parsedEquation);
-    return calculate(parsedEquation[1], parsedEquation[0], parsedEquation[2]);
+    });
+    console.log("final answer", parsedEquation[0]);
+    return parsedEquation[0];
 }
 
 
-equal.addEventListener('click', function () {
+equal.addEventListener('click', function() {
     memStack.push(screen.textContent);
     screen.textContent = operate(memStack);
 });
