@@ -1,4 +1,4 @@
-let displayValue = "";
+let displayValue = '';
 let memStack = [];
 // DOM
 const screen = document.querySelector('.screen');
@@ -19,9 +19,7 @@ const BCK = document.querySelector('.BCK');
 
 BCK.addEventListener('click', deleteLast);
 
-const operIndex = displayValue.lastIndexOf();
-
-const operators = ['*', '-', '+', '/'];
+const operators = ['*', '-', '+', '/', '.'];
 
 allNumbers.forEach(button => {
     button.addEventListener('click', function () {
@@ -123,25 +121,29 @@ const calculate = (operator, a, b) => {
 
 function operate(array) {
     let parsedEquation = [];
-    let operatorCount = [];
+    let numConvert = '';
     for (let index = 0; index < array.length; index++) {
+        if (screen.textContent === '') return "Error";
         // check if number
-        if (parseInt(array[index])) {
-            parsedEquation.push(parseInt(array[index]));
-            // it's an operator
-        } else {
+        if (parseInt(array[index]) || array[index] === '.') {
+            numConvert += array[index];
+        } else { // it's an operator
             console.log("operator", array[index]);
+            parsedEquation.push(Number(numConvert));
             parsedEquation.push(array[index]);
-            operatorCount.push(array[index]);
-            console.log("operators", operatorCount.length);
+            numConvert = '';
         }
     }
+    console.log("numbers", parsedEquation);
+    parsedEquation.push(Number(numConvert));
     operators.forEach((operator) => {
         while (parsedEquation.includes(operator)) {
-            let result = 0;
+            let result = '';
             opIndex = parsedEquation.indexOf(operator);
             result = calculate(parsedEquation[opIndex], parsedEquation[opIndex - 1], parsedEquation[opIndex + 1]);
             parsedEquation.splice(opIndex - 1, 3, result);
+            console.log("pre answer", parsedEquation);
+            console.log("calc answer", parsedEquation[0]);
         }
     });
     console.log("final answer", parsedEquation[0]);
